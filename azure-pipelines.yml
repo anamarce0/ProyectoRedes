@@ -9,6 +9,10 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  dockerRegistryServiceConnection: 'dockerHubServiceConnection'
+  k8sServiceConnection: 'k8sServiceConnection'
+
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -27,11 +31,14 @@ steps:
 - task: Docker@2
   inputs:
     command: 'buildAndPush'
-    repository: 'ProyectoRedes'
+    repository: 'tu-usuario/proyecto-ahorcado'
     dockerfile: '**/Dockerfile'
     containerRegistry: '$(dockerRegistryServiceConnection)'
     tags: |
       $(Build.BuildId)
   displayName: 'Construir y subir imagen Docker'
+
+
+
 
 
