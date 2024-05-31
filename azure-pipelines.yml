@@ -34,12 +34,4 @@ steps:
       $(Build.BuildId)
   displayName: 'Construir y subir imagen Docker'
 
-- task: KubernetesManifest@0
-  inputs:
-    action: 'deploy'
-    kubernetesServiceConnection: '$(k8sServiceConnection)'
-    namespace: 'default'
-    manifests: |
-      manifests/deployment.yaml
-    containers: 'ProyectoRedes:$(Build.BuildId)'
-  displayName: 'Desplegar en Kubernetes'
+
