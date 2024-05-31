@@ -1,0 +1,45 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+# Archivo: azure-pipelines.yml
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Instalar dependencias'
+
+- script: |
+    pytest
+  displayName: 'Ejecutar pruebas'
+
+- task: Docker@2
+  inputs:
+    command: 'buildAndPush'
+    repository: 'ProyectoRedes'
+    dockerfile: '**/Dockerfile'
+    containerRegistry: '$(dockerRegistryServiceConnection)'
+    tags: |
+      $(Build.BuildId)
+  displayName: 'Construir y subir imagen Docker'
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: '$(k8sServiceConnection)'
+    namespace: 'default'
+    manifests: |
+      manifests/deployment.yaml
+    containers: 'ProyectoRedes:$(Build.BuildId)'
+  displayName: 'Desplegar en Kubernetes'
