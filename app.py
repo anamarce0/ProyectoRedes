@@ -4,7 +4,7 @@ import random
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-WORDS = ['python', 'flask', 'docker', 'ahorcado', 'programacion']
+WORDS = ['python', 'flask', 'docker', 'ahorcado', 'programacion','audifono']
 
 
 def initialize_game():
